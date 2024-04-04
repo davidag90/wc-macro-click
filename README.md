@@ -1,2 +1,2 @@
-**WooCommerce Macro Click de Pago**
-WooCommerce Plugin for payments processin through Macro Click de Pago gateway
+# WooCommerce Macro Click de Pago
+WooCommerce Plugin for payments processing through Macro Click de Pago gateway
