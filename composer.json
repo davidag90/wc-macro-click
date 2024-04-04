@@ -1,0 +1,20 @@
+{
+    "name": "david/wc-macro-click",
+    "type": "project",
+    "license": "GNU",
+    "autoload": {
+        "psr-4": {
+            "David\\WcMacroClick\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "David Alejandro Gómez",
+            "email": "info@dagdev.com.ar"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "sha256encript/aes-encrypter": "dev-master"
+    }
+}
