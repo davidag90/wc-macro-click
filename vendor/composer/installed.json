@@ -1,0 +1,44 @@
+{
+    "packages": [
+        {
+            "name": "sha256encript/aes-encrypter",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/luciamarcolini/pluspagos-security-kit-PHP.git",
+                "reference": "b7a35005132f8ef1f8823e871ec614ce9c13d2ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/luciamarcolini/pluspagos-security-kit-PHP/zipball/b7a35005132f8ef1f8823e871ec614ce9c13d2ed",
+                "reference": "b7a35005132f8ef1f8823e871ec614ce9c13d2ed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "time": "2020-03-18T21:04:58+00:00",
+            "default-branch": true,
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "PlusPagos\\": "Encrypt/lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "SHA256 Hash & AES-256-CBC Encrypt/Decrypt SDK for PHP",
+            "support": {
+                "issues": "https://github.com/luciamarcolini/pluspagos-security-kit-PHP/issues",
+                "source": "https://github.com/luciamarcolini/pluspagos-security-kit-PHP/tree/master"
+            },
+            "install-path": "../sha256encript/aes-encrypter"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
