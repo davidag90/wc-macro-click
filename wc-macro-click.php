@@ -18,10 +18,9 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-add_action('plugins_loaded', 'woocommerce_macro_click_init', 0);
+add_action('woocommerce_loaded', 'woocommerce_macro_click_init', 0);
 
-function woocommerce_macro_click_init()
-{
+function woocommerce_macro_click_init() {
    /**
     * Checks if WC_Payment_Gateway exists before extending it in WC_Macro_Click
     */
