@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 use PlusPagos\SHA256Encript;
 use PlusPagos\AESEncrypter;
 
@@ -19,6 +19,7 @@ use PlusPagos\AESEncrypter;
  * @property testmode $testmode
  * @property secret_key $secret_key
  * @property id_comercio $id_comercio
+ * @property sucursal_comercio $sucursal_comercio
  * @property form_fields $form_fields
  */
 
@@ -42,6 +43,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->testmode = 'yes' === $this->get_option('testmode');
       $this->secret_key = $this->get_option('secret_key');
       $this->id_comercio = $this->get_option('id_comercio');
+      $this->sucursal_comercio = ''; // Por defecto en blanco
 
       if (empty($this->success_url) || $this->success_url == null) {
          $this->success_url = get_site_url();
@@ -97,37 +99,69 @@ class WC_Macro_Click extends WC_Payment_Gateway {
             'title'       => 'Secret-Key',
             'type'        => 'password',
             'default'     => ''
-         ),
-         'hash' => array(
-            'title'        => 'Hash',
-            'type'         => 'text',
-            'default'      => ''
          )
       );
    }
 
    public function process_payment($order_id) {
-      $aes = new AESEncrypter();
-
       global $woocommerce;
+      
+      $aes = new AESEncrypter();
+      $sha256 = new SHA256Encript();
 
-      $pedido = wc_get_order($order_id);
-      $callback_success = $aes->EncryptString($this->success_url, $this->secret_key);
-      $callback_cancel = $aes->EncryptString($this->cancel_url, $this->secret_key);
-      $monto = $aes->EncryptString($pedido->get_total(), $this->secret_key);
-      $sucursal = $aes->EncryptString('', $this->secret_key);
-
-      $url = 'https://botonpp.macroclickpago.com.ar';
-
-      if ($this->testmode) {
-         $url = 'https://sandboxpp.macroclickpago.com.ar';
+      function arreIp() {
+         if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+         return $_SERVER['REMOTE_ADDR'];
       }
 
-      $post_args = array(
-         'method'    => 'POST',
+      $pedido = wc_get_order($order_id);
+      $monto = $pedido->get_total();
 
+      $callback_success = $aes->EncryptString($this->success_url, $this->secret_key);
+      $callback_cancel = $aes->EncryptString($this->cancel_url, $this->secret_key);
+      $comercio = $this->id_comercio;
+      $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
+      $transaccion_comercio_id = $order_id;
+      $montoEnc = $aes->EncryptString($monto, $this->secret_key);
+      $producto = 'INSCRIPCIONES';
+      $monto_producto = $monto;
+      $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
+
+      $body = array(
+         'CallbackSuccess'       => $callback_success,
+         'CallbackCancel'        => $callback_cancel,
+         'Comercio'              => $comercio,
+         'SucursalComercio'      => $sucursal_comercio,
+         'TransaccionComercioId' => $transaccion_comercio_id,
+         'Monto'                 => $montoEnc,
+         'Producto[0]'           => $producto,
+         'MontoProducto[0]'      => $monto_producto,
+         'Hash'                  => $hash
       );
 
-      wp_remote_post($url, $args);
+      $url = 'https://botonpp.asjservicios.com.ar';
+
+      if ($this->testmode) {
+         $url = 'https://sandboxpp.asjservicios.com.ar';
+      }
+
+      $response = wp_remote_post($url, array(
+         'method' => 'POST',
+         'target' => '_blank',
+         'body'   => $body
+      ));
+
+      if(is_wp_error($response)) {
+         $error_msg = $response->get_error_message();
+         wc_add_notice('Error: ' . $error_msg, 'error');
+         return;
+      } else {
+         $prnt_response = print_r($response, true);
+         wc_add_notice('Respuesta: ' . $prnt_response, 'notice');
+         return;
+      }
+
+      
    }
 }
