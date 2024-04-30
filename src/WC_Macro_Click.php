@@ -145,6 +145,11 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $producto = 'INSCRIPCIONES';
       $monto_producto = $monto;
       $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
+      $url = 'https://botonpp.macroclickpago.com.ar/';
+
+      if ($this->testmode) {
+         $url = 'https://sandboxpp.asjservicios.com.ar';
+      }
 
       $params = array(
          'CallbackSuccess'       => $callback_success,
@@ -155,42 +160,23 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'Monto'                 => $montoEnc,
          'Producto[0]'           => $producto,
          'MontoProducto[0]'      => $monto_producto,
-         'Hash'                  => $hash
+         'Hash'                  => $hash,
+         'PayURL'                => $url
       );
 
-      /* $query_params = '?';
+      $query_params = '?';
 
-      foreach ($params as $param => $value) {
-         if ($param === array_key_first($params)) {
-            $query_params .= $param . '=' . $value;
+      foreach($params as $key => $value) {
+         if($key === array_key_first($params)) {
+            $query_params .= $key . '=' . $value;
+         } else {
+            $query_params .= '&' . $key . '=' . $value;
          }
-         else {
-            $query_params .= '&' . $param . '=' . $value;
-         }
-      } */
-
-      $url = 'https://botonpp.macroclickpago.com.ar/';
-
-      if ($this->testmode) {
-         $url = 'https://sandboxpp.asjservicios.com.ar';
       }
 
-      $redirect_echo = '<form method="POST" action="' . $url .'" id="form-firma">';
-
-         $redirect_echo .= '<input type="hidden" name="CallbackSuccess" id="CallbackSuccess" value="' . $params['CallbackSuccess'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="CallbackCancel" id="CallbackCancel" value="' . $params['CallbackCancel'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="Comercio" id="Comercio" value="' . $params['Comercio'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="SucursalComercio" id="Sucursal" value="' . $params['SucursalComercio'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="TransaccionComercioId" id="TransaccionComercioId" value="' . $params['TransaccionComercioId'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="Monto" id="Monto" value="' . $params['Monto'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="Producto[0]" id="producto1" value="' . $params['Producto[0]'] .'" />';
-         $redirect_echo .= '<input type="hidden" name="MontoProducto[0]" id="montoproducto1" value="' . $params['MontoProducto[0]'] . '" />';
-         $redirect_echo .= '<input type="hidden" name="Hash" id="hash" value="' . $params['Hash'] . '" />';
-  
-      $redirect_echo .= '</form>';
-  
-      $redirect_echo .= '<script type="text/javascript">';
-         $redirect_echo .= 'document.getElementById("form-firma").submit();';
-      $redirect_echo .= '</script>';
+      return [
+         'result'    => 'success',
+         'redirect'  => 'Send_Form.php' . $query_params
+      ];
    }
 }
