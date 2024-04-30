@@ -164,16 +164,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'PayURL'                => $url
       );
 
-      $query_params = '?';
-
-      foreach($params as $key => $value) {
-         if($key === array_key_first($params)) {
-            $query_params .= $key . '=' . $value;
-         } else {
-            $query_params .= '&' . $key . '=' . $value;
-         }
-      }
-
+      $query_params = http_build_query($params);
+      
       return [
          'result'    => 'success',
          'redirect'  =>  home_url() . '/wc-sendform/Send_Form.php' . $query_params
