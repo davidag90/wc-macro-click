@@ -25,8 +25,8 @@
       <input type="hidden" name="SucursalComercio" id="Sucursal" value="<?= $_GET['SucursalComercio'] ?>" />
       <input type="hidden" name="TransaccionComercioId" value="<?= $_GET['TransaccionComercioId'] ?>" id="TransaccionComercioId" />
       <input type="hidden" name="Monto" id="Monto" value="<?= $_GET['Monto'] ?>" />
-      <input type="hidden" name="Producto[0]" id="producto1" value="<?= $_GET['Producto[0]'] ?>" />
-      <input type="hidden" name="MontoProducto[0]" id="montoproducto1" value="<?= $_GET['MontoProducto[0]'] ?>" />
+      <input type="hidden" name="Producto[0]" id="producto1" value="<?= $_GET['Producto'] ?>" />
+      <input type="hidden" name="MontoProducto[0]" id="montoproducto1" value="<?= $_GET['MontoProducto'] ?>" />
       <input type="hidden" name="Hash" id="hash" value="<?= $_GET['Hash'] ?>" />
    </form>
 
