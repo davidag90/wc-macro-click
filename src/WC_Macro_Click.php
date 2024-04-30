@@ -168,7 +168,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       return [
          'result'    => 'success',
-         'redirect'  =>  home_url() . '/wc-sendform/Send_Form.php?' . $query_params
+         'redirect'  =>  plugin_dir_url(__FILE__) . '/src/Send_Form.php?' . $query_params
       ];
    }
 }
