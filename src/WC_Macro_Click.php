@@ -158,8 +158,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'SucursalComercio'      => $sucursal_comercio,
          'TransaccionComercioId' => $transaccion_comercio_id,
          'Monto'                 => $montoEnc,
-         'Producto\[\0\]'        => $producto,
-         'MontoProducto\[\0\]'   => $monto_producto,
+         'Producto[0]'           => $producto,
+         'MontoProducto[0]'      => $monto_producto,
          'Hash'                  => $hash,
          'PayURL'                => $url
       );
