@@ -44,7 +44,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->icon = plugin_dir_url(__FILE__) . '../assets/logo.png';
       $this->has_fields = false;
       $this->method_title = 'Macro Click de Pago';
-      $this->method_description = 'Permite a los clientes ingresar pagos por Macro Click';
+      $this->method_description = 'Tus clientes finalizan sus pagos en Macro Click de Pago';
 
       $this->supports = array( 'products' );
 
