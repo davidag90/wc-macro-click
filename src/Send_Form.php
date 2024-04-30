@@ -9,13 +9,13 @@
    <?php
       $test_log = fopen('test_log.txt', 'w');
 
-      $data = 'Transaccion ';
-      $data .= strval(time()) . '\n';
-      $data .= var_dump($_GET);
+      $data = 'Transaccion ' . strval(time()) . '\n';
+      foreach ($_GET as $key => $value) {
+         $data .= $key . ' = ' . $value . '\n';
+      }
       $data .= '\n\n';
       
-      fwrite($test_log, $data);
-      fclose($test_log);
+      file_put_contents(__DIR__ . "/test-log.txt", $data);
    ?>
 
    <form method="POST" action="<?= $_GET['PayURL'] ?>" id="form-firma">
