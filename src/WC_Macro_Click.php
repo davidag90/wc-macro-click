@@ -103,8 +103,11 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       );
    }
 
-   public function process_payment($order_id) {
+   public function process_payment( $order_id ) {
       global $woocommerce;
+      $order = new WC_Order( $order_id );
+
+      $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro');
       
       $aes = new AESEncrypter();
       $sha256 = new SHA256Encript();
@@ -128,7 +131,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $monto_producto = $monto;
       $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
 
-      $body = array(
+      $params = array(
          'CallbackSuccess'       => $callback_success,
          'CallbackCancel'        => $callback_cancel,
          'Comercio'              => $comercio,
@@ -140,28 +143,39 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'Hash'                  => $hash
       );
 
-      $url = 'https://botonpp.asjservicios.com.ar';
+      /* $query_params = '?';
+
+      foreach ($params as $param => $value) {
+         if ($param === array_key_first($params)) {
+            $query_params .= $param . '=' . $value;
+         }
+         else {
+            $query_params .= '&' . $param . '=' . $value;
+         }
+      } */
+
+      $url = 'https://botonpp.macroclickpago.com.ar/';
 
       if ($this->testmode) {
          $url = 'https://sandboxpp.asjservicios.com.ar';
       }
 
-      $response = wp_remote_post($url, array(
-         'method' => 'POST',
-         'target' => '_blank',
-         'body'   => $body
-      ));
+      $redirect_echo = '<form method="POST" action="' . $url .'" id="form-firma">';
 
-      if(is_wp_error($response)) {
-         $error_msg = $response->get_error_message();
-         wc_add_notice('Error: ' . $error_msg, 'error');
-         return;
-      } else {
-         $prnt_response = print_r($response, true);
-         wc_add_notice('Respuesta: ' . $prnt_response, 'notice');
-         return;
-      }
-
-      
+         $redirect_echo .= '<input type="hidden" name="CallbackSuccess" id="CallbackSuccess" value="' . $params['CallbackSuccess'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="CallbackCancel" id="CallbackCancel" value="' . $params['CallbackCancel'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="Comercio" id="Comercio" value="' . $params['Comercio'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="SucursalComercio" id="Sucursal" value="' . $params['SucursalComercio'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="TransaccionComercioId" id="TransaccionComercioId" value="' . $params['TransaccionComercioId'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="Monto" id="Monto" value="' . $params['Monto'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="Producto[0]" id="producto1" value="' . $params['Producto[0]'] .'" />';
+         $redirect_echo .= '<input type="hidden" name="MontoProducto[0]" id="montoproducto1" value="' . $params['MontoProducto[0]'] . '" />';
+         $redirect_echo .= '<input type="hidden" name="Hash" id="hash" value="' . $params['Hash'] . '" />';
+  
+      $redirect_echo .= '</form>';
+  
+      $redirect_echo .= '<script type="text/javascript">';
+         $redirect_echo .= 'document.getElementById("form-firma").submit();';
+      $redirect_echo .= '</script>';
    }
 }
