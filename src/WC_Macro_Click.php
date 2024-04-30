@@ -41,7 +41,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
    public function __construct() {
       $this->id = 'macro_click';
-      $this->icon = plugin_dir_url(__FILE__) . '/assets/logo.png';
+      $this->icon = plugin_dir_url(__FILE__) . '../assets/logo.png';
       $this->has_fields = false;
       $this->method_title = 'Macro Click de Pago';
       $this->method_description = 'Permite a los clientes ingresar pagos por Macro Click';
@@ -176,7 +176,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       return [
          'result'    => 'success',
-         'redirect'  =>  plugin_dir_url(__FILE__) . 'Send_Form.php' . $query_params
+         'redirect'  =>  home_url() . '/wc-sendform/Send_Form.php' . $query_params
       ];
    }
 }
