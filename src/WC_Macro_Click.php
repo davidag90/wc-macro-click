@@ -53,8 +53,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->init_settings();
       $this->title = 'Macro Click de Pago';
       $this->description = $this->get_option('description');
-      $this->success_url = $this->get_option('success_url');
-      $this->cancel_url = $this->get_option('cancel_url');
+      $this->success_url = get_site_url() . $this->get_option('success_url');
+      $this->cancel_url = get_site_url() . $this->get_option('cancel_url');
       $this->testmode = 'yes' === $this->get_option('testmode');
       $this->secret_key = $this->get_option('secret_key');
       $this->id_comercio = $this->get_option('id_comercio');
@@ -93,12 +93,12 @@ class WC_Macro_Click extends WC_Payment_Gateway {
             'description' => 'Habilita el modo de pruebas para desarrollo',
             'default'     => 'yes',
          ),
-         'success_url' => array(
+/*          'success_url' => array(
             'title'       => 'URL exitosa',
             'description' => 'URL a donde redireccionar los pagos finalizados correctamente. Si no se completa, el usuario volverá a la página principal.',
             'type'        => 'text',
             'default'     => ''
-         ),
+         ), */
          'cancel_url' => array(
             'title'       => 'URL de cancelación',
             'description' => 'URL a donde redireccionar los pagos abortados y/o fallidos. Si no se completa, el usuario volverá a la página principal.',
@@ -136,7 +136,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $pedido = wc_get_order($order_id);
       $monto = $pedido->get_total();
 
-      $callback_success = $aes->EncryptString($this->success_url, $this->secret_key);
+      $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
       $callback_cancel = $aes->EncryptString($this->cancel_url, $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
