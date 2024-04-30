@@ -24,21 +24,20 @@ use PlusPagos\AESEncrypter;
  */
 
 class WC_Macro_Click extends WC_Payment_Gateway {
-   public string $id;
-   public string $icon;
-   public bool $has_fields;
-   public string $method_title;
-   public string $method_description;
-   public array $supports;
-   public string $title;
-   public string $description;
-   public string $success_url;
-   public string $cancel_url;
+   public $id;
+   public $icon;
+   public $has_fields;
+   public $method_title;
+   public $method_description;
+   public $supports;
+   public $title;
+   public $description;
+   public $success_url;
+   public $cancel_url;
    public $testmode;
-   public string $secret_key;
-   public string $id_comercio;
-   public string $sucursal_comercio;
-   
+   public $secret_key;
+   public $id_comercio;
+   public $sucursal_comercio;
 
    public function __construct() {
       $this->id = 'macro_click';
