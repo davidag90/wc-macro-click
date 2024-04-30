@@ -75,7 +75,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->form_fields = array(
          'enabled' => array(
             'title'       => 'Activar/Desactivar',
-            'label'       => 'Activar o Desactivar Macro Click de Pago',
+            'label'       => 'Activar Macro Click de Pago',
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no'
