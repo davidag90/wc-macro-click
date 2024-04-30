@@ -7,7 +7,7 @@
 </head>
 <body>
    <?php
-      $test_log = fopen('test_log.txt', 'w');
+      $test_log = fopen('test_log.txt', 'a');
 
       $data = "Transaccion " . strval(time()) . PHP_EOL;
       foreach ($_GET as $key => $value) {
