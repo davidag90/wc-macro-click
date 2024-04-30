@@ -95,13 +95,13 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          ),
          'success_url' => array(
             'title'       => 'URL exitosa',
-            'description' => 'URL a donde redireccionar los pagos realizados correctamente. Si no se completa, el usuario volverá a la página principal.',
+            'description' => 'URL a donde redireccionar los pagos finalizados correctamente. Si no se completa, el usuario volverá a la página principal.',
             'type'        => 'text',
             'default'     => ''
          ),
          'cancel_url' => array(
             'title'       => 'URL de cancelación',
-            'description' => 'URL a donde redireccionar los pagos realizados abortados. Si no se completa, el usuario volverá a la página principal.',
+            'description' => 'URL a donde redireccionar los pagos abortados y/o fallidos. Si no se completa, el usuario volverá a la página principal.',
             'type'        => 'text',
             'default'     => ''
          ),
