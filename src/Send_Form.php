@@ -9,11 +9,11 @@
    <?php
       $test_log = fopen('test_log.txt', 'w');
 
-      $data = 'Transaccion ' . strval(time()) . '\n';
+      $data = "Transaccion " . strval(time()) . "\n";
       foreach ($_GET as $key => $value) {
-         $data .= $key . ' = ' . $value . '\n';
+         $data .= $key . " = " . $value . "\n";
       }
-      $data .= '\n\n';
+      $data .= "\n\n";
       
       file_put_contents(__DIR__ . "/test-log.txt", $data);
    ?>
