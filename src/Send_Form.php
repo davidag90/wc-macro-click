@@ -14,8 +14,8 @@
          $data .= $key . " = " . $value . PHP_EOL;
       }
       $data .= PHP_EOL . "----------" . PHP_EOL;
-      
-      file_put_contents(__DIR__ . "/test-log.txt", $data);
+
+      fwrite($test_log, $data);
    ?>
 
    <form method="POST" action="<?= $_GET['PayURL'] ?>" id="form-firma">
