@@ -24,6 +24,22 @@ use PlusPagos\AESEncrypter;
  */
 
 class WC_Macro_Click extends WC_Payment_Gateway {
+   public string $id;
+   public string $icon;
+   public bool $has_fields;
+   public string $method_title;
+   public string $method_description;
+   public array $supports;
+   public string $title;
+   public string $description;
+   public string $success_url;
+   public string $cancel_url;
+   public $testmode;
+   public string $secret_key;
+   public string $id_comercio;
+   public string $sucursal_comercio;
+   
+
    public function __construct() {
       $this->id = 'macro_click';
       $this->icon = plugin_dir_url(__FILE__) . '/assets/logo.png';
