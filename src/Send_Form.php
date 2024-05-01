@@ -6,7 +6,7 @@
    $sucursalComercio = $_GET['SucursalComercio'];
    $transaccionComercioId = $_GET['TransaccionComercioId'];
    $monto = $_GET['Monto'];
-   $productos = json_decode(urldecode($GET['Productos']), true);
+   $productos = json_decode(urldecode($_GET['Productos']), true);
    $hash = $_GET['Hash'];
 ?>
 
