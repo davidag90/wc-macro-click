@@ -1,3 +1,15 @@
+<?php
+   $payURL = $_GET['PayURL'];
+   $callbackSuccess = $_GET['CallbackSuccess'];
+   $callbackCancel = $_GET['CallbackCancel'];
+   $comercio = $_GET['Comercio'];
+   $sucursalComercio = $_GET['SucursalComercio'];
+   $transaccionComercioId = $_GET['TransaccionComercioId'];
+   $monto = $_GET['Monto'];
+   $productos = json_decode(urldecode($GET['Productos']), true);
+   $hash = $_GET['Hash'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,28 +18,18 @@
    <title>WC Macro Click de Pago - Procesando...</title>
 </head>
 <body>
-   <?php
-      $test_log = fopen('test_log.txt', 'a');
-
-      $data = "Transaccion " . strval(time()) . PHP_EOL;
-      foreach ($_GET as $key => $value) {
-         $data .= $key . " = " . $value . PHP_EOL;
-      }
-      $data .= PHP_EOL . "----------" . PHP_EOL;
-
-      fwrite($test_log, $data);
-   ?>
-
-   <form method="POST" action="<?= $_GET['PayURL'] ?>" id="form-firma">
-      <input type="hidden" name="CallbackSuccess" id="CallbackSuccess" value="<?= $_GET['CallbackSuccess'] ?>" />
-      <input type="hidden" name="CallbackCancel" id="CallbackCancel" value="<?= $_GET['CallbackCancel'] ?>" />
-      <input type="hidden" name="Comercio" id="Comercio" value="<?= $_GET['Comercio'] ?>" />
-      <input type="hidden" name="SucursalComercio" id="Sucursal" value="<?= $_GET['SucursalComercio'] ?>" />
-      <input type="hidden" name="TransaccionComercioId" value="<?= $_GET['TransaccionComercioId'] ?>" id="TransaccionComercioId" />
-      <input type="hidden" name="Monto" id="Monto" value="<?= $_GET['Monto'] ?>" />
-      <input type="hidden" name="Producto[0]" id="producto1" value="<?= $_GET['Producto'] ?>" />
-      <input type="hidden" name="MontoProducto[0]" id="montoproducto1" value="<?= $_GET['MontoProducto'] ?>" />
-      <input type="hidden" name="Hash" id="hash" value="<?= $_GET['Hash'] ?>" />
+   <form method="POST" action="<?= $payURL ?>" id="form-firma">
+      <input type="hidden" name="CallbackSuccess" id="CallbackSuccess" value="<?= $callbackSuccess ?>" />
+      <input type="hidden" name="CallbackCancel" id="CallbackCancel" value="<?= $callbackCancel ?>" />
+      <input type="hidden" name="Comercio" id="Comercio" value="<?= $comercio ?>" />
+      <input type="hidden" name="SucursalComercio" id="Sucursal" value="<?= $sucursalComercio ?>" />
+      <input type="hidden" name="TransaccionComercioId" value="<?= $transaccionComercioId ?>" id="TransaccionComercioId" />
+      <input type="hidden" name="Monto" id="Monto" value="<?= $monto ?>" />
+      <?php for($i = 0; $i < count($productos); $i++) { ?>
+         <input type="hidden" name="Producto[<?= $i ?>]" id="producto<?= $i ?>" value="<?= $productos[$i]['nombreProducto'] ?>" />
+         <input type="hidden" name="MontoProducto[<?= $i ?>]" id="montoproducto<?= $i ?>" value="<?= $productos[$i]['montoProducto'] ?>" />
+      <?php } ?>
+      <input type="hidden" name="Hash" id="hash" value="<?= $hash ?>" />
    </form>
 
    <script>

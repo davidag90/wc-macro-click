@@ -120,8 +120,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
    public function process_payment( $order_id ) {
       global $woocommerce;
-      $order = new WC_Order( $order_id );
-
+      $order = wc_get_order($order_id);   
+      
       $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro');
       
       $aes = new AESEncrypter();
@@ -133,24 +133,38 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          return $_SERVER['REMOTE_ADDR'];
       }
 
-      $pedido = wc_get_order($order_id);
-      $monto = $pedido->get_total();
-
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
       $callback_cancel = $aes->EncryptString($this->cancel_url, $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
       $transaccion_comercio_id = $order_id;
+      $monto = $order->get_total();
       $montoEnc = $aes->EncryptString($monto, $this->secret_key);
-      $producto = 'INSCRIPCIONES';
       $monto_producto = $monto;
       $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
-      $url = 'https://botonpp.macroclickpago.com.ar/';
-
+      
       if ($this->testmode) {
          $url = 'https://sandboxpp.asjservicios.com.ar';
+      } else {
+         $url = 'https://botonpp.macroclickpago.com.ar/';
       }
 
+      $items = $order->get_items();
+
+      $productos = [];
+
+      foreach ( $items as $item_id => $item ) {
+         $nombre_producto = $item->get_name();
+         $monto_producto = strval($order->get_item_total($item));
+
+         $productos[] = array(
+            'nombreProducto'  => $nombre_producto,
+            'montoProducto'   => $monto_producto
+         );
+      }
+
+      $productos_enc = urlencode(json_encode($productos));
+      
       $params = array(
          'CallbackSuccess'       => $callback_success,
          'CallbackCancel'        => $callback_cancel,
@@ -158,8 +172,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'SucursalComercio'      => $sucursal_comercio,
          'TransaccionComercioId' => $transaccion_comercio_id,
          'Monto'                 => $montoEnc,
-         'Producto'              => $producto,
-         'MontoProducto'         => $monto_producto,
+         'Productos'             => $productos_enc,
          'Hash'                  => $hash,
          'PayURL'                => $url
       );
@@ -170,5 +183,9 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'result'    => 'success',
          'redirect'  =>  plugin_dir_url(__FILE__) . '/Send_Form.php?' . $query_params
       ];
+   }
+
+   public function process_macro_response() {
+
    }
 }
