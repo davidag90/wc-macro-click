@@ -53,8 +53,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->init_settings();
       $this->title = 'Macro Click de Pago';
       $this->description = $this->get_option('description');
-      $this->success_url = get_site_url() . $this->get_option('success_url');
-      $this->cancel_url = get_site_url() . $this->get_option('cancel_url');
+      /* $this->success_url = get_site_url() . $this->get_option('success_url');
+      $this->cancel_url = get_site_url() . $this->get_option('cancel_url'); */
       $this->testmode = 'yes' === $this->get_option('testmode');
       $this->secret_key = $this->get_option('secret_key');
       $this->id_comercio = $this->get_option('id_comercio');
@@ -69,6 +69,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       }
 
       add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+      add_action('woocommerce_api_' . $this->id, array($this, 'process_macro_click'));
    }
 
    public function init_form_fields() {
@@ -98,13 +99,13 @@ class WC_Macro_Click extends WC_Payment_Gateway {
             'description' => 'URL a donde redireccionar los pagos finalizados correctamente. Si no se completa, el usuario volverá a la página principal.',
             'type'        => 'text',
             'default'     => ''
-         ), */
+         ),
          'cancel_url' => array(
             'title'       => 'URL de cancelación',
             'description' => 'URL a donde redireccionar los pagos abortados y/o fallidos. Si no se completa, el usuario volverá a la página principal.',
             'type'        => 'text',
             'default'     => ''
-         ),
+         ), */
          'id_comercio' => array(
             'title'       => 'Id de Comercio',
             'type'        => 'text',
@@ -134,7 +135,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       }
 
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
-      $callback_cancel = $aes->EncryptString($this->cancel_url, $this->secret_key);
+      $callback_cancel = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
       $transaccion_comercio_id = $order_id;
@@ -185,7 +186,14 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       ];
    }
 
-   public function process_macro_response() {
+   public function process_macro_click() {
+      $order_id = $_REQUEST['TransaccionComercioId'];
+      $order = wc_get_order($order_id);
 
+      if($_REQUEST['EstadoId'] == 3) {
+         $order->payment_complete();
+      } else {
+         return;
+      }
    }
 }
