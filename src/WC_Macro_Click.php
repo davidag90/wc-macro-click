@@ -190,7 +190,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $order_id = $_REQUEST['TransaccionComercioId'];
       $order = wc_get_order($order_id);
 
-      if($_REQUEST['EstadoId'] == 3) {
+      if($_REQUEST['EstadoId'] == 2) {
          $order->payment_complete();
       } else {
          return;
