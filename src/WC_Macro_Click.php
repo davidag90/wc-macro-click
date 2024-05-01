@@ -155,7 +155,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       foreach ( $items as $item_id => $item ) {
          $nombre_producto = $item->get_name();
-         $monto_producto = strval($order->get_item_total($item));
+         $monto_producto = $order->get_item_total($item);
 
          $productos[] = array(
             'nombreProducto'  => $nombre_producto,
