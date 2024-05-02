@@ -124,7 +124,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       }
 
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
-      $callback_cancel = $aes->EncryptString(wc_get_checkout_url(), $this->secret_key);
+      $callback_cancel = $aes->EncryptString(wc_get_checkout_url() . '?order_canceled=true', $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
       $transaccion_comercio_id = $order_id;
