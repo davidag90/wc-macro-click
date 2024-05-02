@@ -201,6 +201,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
          if($status === '3') {
             $order->payment_complete();
+            $order->update_status('completed');
          }
          
          if($status === '4' || $status === '7' || $status === '8' || $status === '11') {
