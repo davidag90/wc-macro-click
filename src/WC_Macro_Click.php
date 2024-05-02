@@ -94,18 +94,6 @@ class WC_Macro_Click extends WC_Payment_Gateway {
             'description' => 'Habilita el modo de pruebas para desarrollo',
             'default'     => 'yes',
          ),
-/*          'success_url' => array(
-            'title'       => 'URL exitosa',
-            'description' => 'URL a donde redireccionar los pagos finalizados correctamente. Si no se completa, el usuario volverá a la página principal.',
-            'type'        => 'text',
-            'default'     => ''
-         ),
-         'cancel_url' => array(
-            'title'       => 'URL de cancelación',
-            'description' => 'URL a donde redireccionar los pagos abortados y/o fallidos. Si no se completa, el usuario volverá a la página principal.',
-            'type'        => 'text',
-            'default'     => ''
-         ), */
          'id_comercio' => array(
             'title'       => 'Id de Comercio',
             'type'        => 'text',
@@ -121,6 +109,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
    public function process_payment( $order_id ) {
       global $woocommerce;
+      
       $order = wc_get_order($order_id);   
       
       $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro');
@@ -205,7 +194,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          }
          
          if($status === '4' || $status === '7' || $status === '8' || $status === '11') {
-            $order->update_status('on-hold', 'Pedido en suspenso por pago fallido');      
+            $order->update_status('on-hold', 'Pedido en suspenso por pago fallido');
+            wc_add_notice('Procedimiento de pago cancelado. Por favor, intenta nuevamente con otro medio', 'notice');
          }
       }
    }
