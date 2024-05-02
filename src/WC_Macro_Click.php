@@ -194,7 +194,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          }
          
          if($status === '4' || $status === '7' || $status === '8' || $status === '11') {
-            $order->update_status('on-hold', 'Pedido en suspenso por pago fallido');
+            $order->update_status('pending', 'Pedido en suspenso por pago fallido');
             wc_add_notice('Procedimiento de pago cancelado. Por favor, intenta nuevamente con otro medio', 'notice');
          }
       }
