@@ -193,7 +193,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
          $writeData = serialize($data);
 
-         file_put_contents(plugin_dir_url(__FILE__) . 'testlog.txt', PHP_EOL . $writeData . PHP_EOL);
+         file_put_contents(__DIR__ . 'testlog.txt', PHP_EOL . $writeData . PHP_EOL);
 
          $order_id = $data['TransaccionComercioId'];
          $status = $data['EstadoId'];
