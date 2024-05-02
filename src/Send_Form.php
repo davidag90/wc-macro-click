@@ -30,7 +30,6 @@
          <input type="hidden" name="MontoProducto[<?= $i ?>]" id="montoproducto<?= $i ?>" value="<?= $productos[$i]['montoProducto'] ?>" />
       <?php } ?>
       <input type="hidden" name="Hash" id="hash" value="<?= $hash ?>" />
-      <button type="submit">Enviar</button>
    </form>
 
    <script>
