@@ -135,7 +135,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       }
 
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
-      $callback_cancel = $aes->EncryptString(wc_get_checkout_url(), $this->secret_key);
+      $callback_cancel = $aes->EncryptString(wc_get_checkout_url() . '?order-cancelled=true', $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
       $transaccion_comercio_id = $order_id;
@@ -211,7 +211,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
                echo '<div class="alert alert-danger my-3">El pago ha sido cancelado o falló. Intenta nuevamente con otro medio de pago</div>';
             }
             
-            add_action('woocommerce_before_checkout_form', 'payment_cancelled_notice');
+            add_action('woocommerce_before_checkout_form', 'payment_cancelled_notice', 1);
          }
       }
    }
