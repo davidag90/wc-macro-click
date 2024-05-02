@@ -34,10 +34,10 @@
    </form>
 
    <script>
-   /* document.addEventListener('DOMContentLoaded', () => {
+   document.addEventListener('DOMContentLoaded', () => {
       let form = document.getElementById('form-firma');
       form.submit();
-   }); */
+   });
    </script>
 </body>
 
