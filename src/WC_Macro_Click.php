@@ -187,13 +187,25 @@ class WC_Macro_Click extends WC_Payment_Gateway {
    }
 
    public function process_macro_click() {
-      $order_id = $_REQUEST['TransaccionComercioId'];
-      $order = wc_get_order($order_id);
+      if($_SERVER['REQUEST_METHOD'] === 'POST') {
+         $jsonBody = file_get_contents('php://input');
+         $data = json_decode($jsonBody, true);
 
-      if($_REQUEST['EstadoId'] == 2) {
-         $order->payment_complete();
-      } else {
-         return;
+         $writeData = serialize($data);
+
+         file_put_contents(__FILE__ . '/testlog.txt', PHP_EOL . $writeData . PHP_EOL);
+
+         $order_id = $data['TransaccionComercioId'];
+         $status = $data['EstadoId'];
+         $order = wc_get_order($order_id);
+
+         if($status === '3') {
+            $order->payment_complete();
+         } elseif($status === '4' || $status === '7' || $status === '8' || $status === '11') {
+            $order->update_status('cancelled', 'Pedido cancelado por pago fallido');
+         } else {
+            return;
+         }
       }
    }
 }
