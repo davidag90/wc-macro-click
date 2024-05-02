@@ -208,10 +208,10 @@ class WC_Macro_Click extends WC_Payment_Gateway {
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
             
             function payment_cancelled_notice() {
-               echo '<div class="alert alert-danger my-3">El pago ha sido cancelado o falló. Intenta nuevamente con otro medio de pago</div>';
+               wc_print_notice('Pago fallido o cancelado. Intentá nuevamente con otro medio de pago', 'error');
             }
             
-            add_action('woocommerce_before_checkout_form', 'payment_cancelled_notice', 1);
+            add_action('woocommerce_before_checkout_form', 'payment_cancelled_notice');
          }
       }
    }
