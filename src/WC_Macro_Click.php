@@ -145,7 +145,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
       
       if ($this->testmode) {
-         $url = 'https://sandboxpp.asjservicios.com.ar';
+         $url = 'https://sandboxpp.macroclickpago.com.ar';
       } else {
          $url = 'https://botonpp.macroclickpago.com.ar/';
       }
