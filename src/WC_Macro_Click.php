@@ -127,7 +127,20 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $callback_cancel = $aes->EncryptString(wc_get_checkout_url() . '?order_canceled=true', $this->secret_key);
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
-      $transaccion_comercio_id = $order_id;
+      
+      function generateRandomStr($length = 8) {
+         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+         $charactersLength = strlen($characters);
+         $randomString = '';
+         for ($i = 0; $i < $length; $i++) {
+               $randomString .= $characters[random_int(0, $charactersLength - 1)];
+         }
+
+         return $randomString;
+      }
+
+      $transaccion_comercio_id = $order_id . '-' . generateRandomStr(8);
+      
       $monto = $order->get_total();
       $montoEnc = $aes->EncryptString($monto, $this->secret_key);
       $monto_producto = $monto;
