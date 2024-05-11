@@ -197,7 +197,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
          file_put_contents(__DIR__ . 'testlog.txt', PHP_EOL . $writeData . PHP_EOL);
 
-         $order_id = $data['TransaccionComercioId'];
+         $order_id = substr($data['TransaccionComercioId'], -9);
+         
          $status = $data['EstadoId'];
          $order = wc_get_order($order_id);
 
