@@ -113,6 +113,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
       $callback_cancel = $aes->EncryptString(wc_get_checkout_url() . '?order_canceled=true', $this->secret_key);
+      
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
       
@@ -146,6 +147,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       foreach ( $items as $item_id => $item ) {
          $nombre_producto = $item->get_name();
+
+         // Ajusta formato del dato numérico brindado por WooCommerce a las necesidades de Macro
          $monto_producto = str_replace([',', '.'], '', number_format($order->get_item_total($item), 2, '.', ''));
 
          $productos[] = array(
