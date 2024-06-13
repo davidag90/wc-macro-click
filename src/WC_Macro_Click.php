@@ -100,7 +100,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       
       $order = wc_get_order($order_id);   
       
-      $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro');
+      $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro sobre el resultado del intento de pago');
       
       $aes = new AESEncrypter();
       $sha256 = new SHA256Encript();
