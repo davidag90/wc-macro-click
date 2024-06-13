@@ -14,7 +14,6 @@ use PlusPagos\AESEncrypter;
  * @property supports $supports
  * @property title $title
  * @property description $description
- * @property success_url $success_url
  * @property cancel_url $cancel_url
  * @property testmode $testmode
  * @property secret_key $secret_key
@@ -32,7 +31,6 @@ class WC_Macro_Click extends WC_Payment_Gateway {
    public $supports;
    public $title;
    public $description;
-   public $success_url;
    public $cancel_url;
    public $testmode;
    public $secret_key;
@@ -53,20 +51,10 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $this->init_settings();
       $this->title = 'Macro Click de Pago';
       $this->description = $this->get_option('description');
-      /* $this->success_url = get_site_url() . $this->get_option('success_url');
-      $this->cancel_url = get_site_url() . $this->get_option('cancel_url'); */
       $this->testmode = 'yes' === $this->get_option('testmode');
       $this->secret_key = $this->get_option('secret_key');
       $this->id_comercio = $this->get_option('id_comercio');
       $this->sucursal_comercio = ''; // Por defecto en blanco
-
-      if (empty($this->success_url) || $this->success_url == null) {
-         $this->success_url = get_site_url();
-      }
-
-      if (empty($this->cancel_url) || $this->cancel_url == null) {
-         $this->cancel_url = get_site_url();
-      }
 
       add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
       add_action('woocommerce_api_' . $this->id, array($this, 'process_macro_click'));
