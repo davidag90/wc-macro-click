@@ -6,6 +6,7 @@
    $sucursalComercio = $_GET['SucursalComercio'];
    $transaccionComercioId = $_GET['TransaccionComercioId'];
    $monto = $_GET['Monto'];
+   $informacion = $_GET['Informacion'];
    $productos = json_decode(urldecode($_GET['Productos']), true);
    $hash = $_GET['Hash'];
 ?>
@@ -29,7 +30,12 @@
          <input type="hidden" name="Producto[<?= $i ?>]" id="producto<?= $i ?>" value="<?= $productos[$i]['nombreProducto'] ?>" />
          <input type="hidden" name="MontoProducto[<?= $i ?>]" id="montoproducto<?= $i ?>" value="<?= $productos[$i]['montoProducto'] ?>" />
       <?php } ?>
+      
+      <input type="hidden" name="Informacion" id="informacion" value="<?= $informacion ?>" />
       <input type="hidden" name="Hash" id="hash" value="<?= $hash ?>" />
+      <input type="hidden" name="Monto" id="monto" value="<?= $monto ?>" />
+      
+      <button type="submit">Enviar</button>
    </form>
 
    <script>

@@ -158,6 +158,16 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       }
 
       $productos_enc = urlencode(json_encode($productos));
+
+      $alumno_info = [
+         'Nombre y Apellido' => $order->get_formatted_billing_full_name(),
+         'Telefono' => $order->get_billing_phone(),
+         'DNI' => $order->get_meta('_billing_dni'),
+      ];
+
+      $informacion_json = json_encode($alumno_info, JSON_UNESCAPED_UNICODE);
+
+      $informacion = $aes->EncryptString($informacion_json, $this->secret_key);
       
       $params = array(
          'CallbackSuccess'       => $callback_success,
@@ -167,8 +177,9 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          'TransaccionComercioId' => $transaccion_comercio_id,
          'Monto'                 => $montoEnc,
          'Productos'             => $productos_enc,
+         'Informacion'           => $informacion,
          'Hash'                  => $hash,
-         'PayURL'                => $url
+         'PayURL'                => $url,
       );
 
       $query_params = http_build_query($params);
@@ -193,11 +204,23 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          $order = wc_get_order($order_id);
 
          if($status === '3') {
+            if(!$order->meta_exists('macro_click_transac_id')) {
+               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            } else {
+               $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            }
+            
             $order->payment_complete();
             $order->update_status('completed');
          }
          
          if($status === '4' || $status === '7' || $status === '8' || $status === '11') {
+            if(!$order->meta_exists('macro_click_transac_id')) {
+               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            } else {
+               $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            }
+
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
             wc_add_notice('Procedimiento de pago cancelado. Por favor, intenta nuevamente con otro medio', 'notice');
          }
