@@ -34,8 +34,6 @@
       <input type="hidden" name="Informacion" id="informacion" value="<?= $informacion ?>" />
       <input type="hidden" name="Hash" id="hash" value="<?= $hash ?>" />
       <input type="hidden" name="Monto" id="monto" value="<?= $monto ?>" />
-      
-      <button type="submit">Enviar</button>
    </form>
 
    <script>
