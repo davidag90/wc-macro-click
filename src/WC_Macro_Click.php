@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
+
 use PlusPagos\SHA256Encript;
 use PlusPagos\AESEncrypter;
 
@@ -22,7 +23,8 @@ use PlusPagos\AESEncrypter;
  * @property form_fields $form_fields
  */
 
-class WC_Macro_Click extends WC_Payment_Gateway {
+class WC_Macro_Click extends WC_Payment_Gateway
+{
    public $id;
    public $icon;
    public $has_fields;
@@ -37,14 +39,15 @@ class WC_Macro_Click extends WC_Payment_Gateway {
    public $id_comercio;
    public $sucursal_comercio;
 
-   public function __construct() {
+   public function __construct()
+   {
       $this->id = 'macro_click';
       $this->icon = plugin_dir_url(__FILE__) . '../assets/logo.png';
       $this->has_fields = false;
       $this->method_title = 'Macro Click de Pago';
       $this->method_description = 'Tus clientes finalizan sus pagos en Macro Click de Pago';
 
-      $this->supports = array( 'products' );
+      $this->supports = array('products');
 
       $this->init_form_fields();
 
@@ -60,7 +63,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       add_action('woocommerce_api_' . $this->id, array($this, 'process_macro_click'));
    }
 
-   public function init_form_fields() {
+   public function init_form_fields()
+   {
       $this->form_fields = array(
          'enabled' => array(
             'title'       => 'Activar/Desactivar',
@@ -95,17 +99,19 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       );
    }
 
-   public function process_payment( $order_id ) {
+   public function process_payment($order_id)
+   {
       global $woocommerce;
-      
-      $order = wc_get_order($order_id);   
-      
+
+      $order = wc_get_order($order_id);
+
       $order->update_status('on-hold', 'Aguardando confirmacion por parte de Macro sobre el resultado del intento de pago');
-      
+
       $aes = new AESEncrypter();
       $sha256 = new SHA256Encript();
 
-      function arreIp() {
+      function arreIp()
+      {
          if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
          if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
          return $_SERVER['REMOTE_ADDR'];
@@ -113,28 +119,29 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       $callback_success = $aes->EncryptString($this->get_return_url($order), $this->secret_key);
       $callback_cancel = $aes->EncryptString(wc_get_checkout_url() . '?order_canceled=true', $this->secret_key);
-      
+
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
-      
-      function generateRandomStr($length = 8) {
+
+      function generateRandomStr($length = 8)
+      {
          $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
          $charactersLength = strlen($characters);
          $randomString = '';
          for ($i = 0; $i < $length; $i++) {
-               $randomString .= $characters[random_int(0, $charactersLength - 1)];
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
          }
 
          return $randomString;
       }
 
       $transaccion_comercio_id = $order_id . '-' . generateRandomStr(8);
-      
+
       $monto = $order->get_total();
       $montoEnc = $aes->EncryptString($monto, $this->secret_key);
       $monto_producto = $monto;
       $hash = $sha256->Generate(arreIp(), $this->secret_key, $comercio, '', $monto);
-      
+
       if ($this->testmode) {
          $url = 'https://sandboxpp.macroclickpago.com.ar';
       } else {
@@ -145,7 +152,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
 
       $productos = [];
 
-      foreach ( $items as $item_id => $item ) {
+      foreach ($items as $item_id => $item) {
          $nombre_producto = $item->get_name();
 
          // Ajusta formato del dato numérico brindado por WooCommerce a las necesidades de Macro
@@ -168,7 +175,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $informacion_json = json_encode($alumno_info, JSON_UNESCAPED_UNICODE);
 
       $informacion = $aes->EncryptString($informacion_json, $this->secret_key);
-      
+
       $params = array(
          'CallbackSuccess'       => $callback_success,
          'CallbackCancel'        => $callback_cancel,
@@ -190,20 +197,23 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       ];
    }
 
-   public function process_macro_click() {
-      if($_SERVER['REQUEST_METHOD'] === 'POST') {
+   public function process_macro_click()
+   {
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
 
          $writeData = serialize($data);
-         
+
          $order_id = strstr($data['TransaccionComercioId'], '-', true);
          file_put_contents(__DIR__ . 'testlog.txt', PHP_EOL . $writeData . PHP_EOL . $order_id . PHP_EOL);
-         
+
          $status = $data['EstadoId'];
          $order = wc_get_order($order_id);
 
-       if ($status === '3') {
+         $transac_id_exists = $order->meta_exists('macro_click_transac_id');
+
+         if ($status === '3') {
             if ($transac_id_exists) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             } else {
