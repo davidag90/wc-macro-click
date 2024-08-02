@@ -203,22 +203,22 @@ class WC_Macro_Click extends WC_Payment_Gateway {
          $status = $data['EstadoId'];
          $order = wc_get_order($order_id);
 
-         if($status === '3') {
-            if(!$order->meta_exists('macro_click_transac_id')) {
-               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
-            } else {
+       if ($status === '3') {
+            if ($transac_id_exists) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            } else {
+               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             }
-            
+
             $order->payment_complete();
             $order->update_status('completed');
          }
-         
-         if($status === '4' || $status === '7' || $status === '8' || $status === '11') {
-            if(!$order->meta_exists('macro_click_transac_id')) {
-               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
-            } else {
+
+         if ($status === '4' || $status === '7' || $status === '8' || $status === '11') {
+            if ($transac_id_exists) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+            } else {
+               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             }
 
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
