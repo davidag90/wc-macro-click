@@ -72,7 +72,6 @@ $hash = $_GET['Hash'];
          }
       }
 
-
       form {
          display: none;
       }
