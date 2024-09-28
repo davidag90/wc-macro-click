@@ -5,7 +5,7 @@ use PlusPagos\SHA256Encript;
 use PlusPagos\AESEncrypter;
 
 /**
- * Gateway class para procesar pagos con Macro Click
+ * Gateway class for payment processing using Macro Click de Pago system
  * 
  * @property id $id
  * @property icon $icon
@@ -23,8 +23,7 @@ use PlusPagos\AESEncrypter;
  * @property form_fields $form_fields
  */
 
-class WC_Macro_Click extends WC_Payment_Gateway
-{
+class WC_Macro_Click extends WC_Payment_Gateway {
    public $id;
    public $icon;
    public $has_fields;
@@ -39,8 +38,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
    public $id_comercio;
    public $sucursal_comercio;
 
-   public function __construct()
-   {
+   public function __construct() {
       $this->id = 'macro_click';
       $this->icon = plugin_dir_url(__FILE__) . '../assets/logo.png';
       $this->has_fields = false;
@@ -55,16 +53,26 @@ class WC_Macro_Click extends WC_Payment_Gateway
       $this->title = 'Macro Click de Pago';
       $this->description = $this->get_option('description');
       $this->testmode = 'yes' === $this->get_option('testmode');
-      $this->secret_key = $this->get_option('secret_key');
-      $this->id_comercio = $this->get_option('id_comercio');
-      $this->sucursal_comercio = ''; // Por defecto en blanco
 
+      // Checks if testmode is "on" to define "secret_key" and "id_comercio"
+      if ($this->testmode) {
+         $this->secret_key = $this->get_option('secret_key_test');
+         $this->id_comercio = $this->get_option('id_comercio_test');
+      } else {
+         $this->secret_key = $this->get_option('secret_key');
+         $this->id_comercio = $this->get_option('id_comercio');
+      }
+
+      $this->sucursal_comercio = ''; // Default value defined by API docs
+
+      // Options update hook
       add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+
+      // API hook to process the result of payment operation on the Gateway side
       add_action('woocommerce_api_' . $this->id, array($this, 'process_macro_click'));
    }
 
-   public function init_form_fields()
-   {
+   public function init_form_fields() {
       $this->form_fields = array(
          'enabled' => array(
             'title'       => 'Activar/Desactivar',
@@ -95,12 +103,21 @@ class WC_Macro_Click extends WC_Payment_Gateway
             'title'       => 'Secret-Key',
             'type'        => 'password',
             'default'     => ''
-         )
+         ),
+         'id_comercio_test' => array(
+            'title'       => 'Id de Comercio Test',
+            'type'        => 'text',
+            'default'     => ''
+         ),
+         'secret_key_test' => array(
+            'title'       => 'Secret-Key Test',
+            'type'        => 'password',
+            'default'     => ''
+         ),
       );
    }
 
-   public function process_payment($order_id)
-   {
+   public function process_payment($order_id) {
       global $woocommerce;
 
       $order = wc_get_order($order_id);
@@ -110,8 +127,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
       $aes = new AESEncrypter();
       $sha256 = new SHA256Encript();
 
-      function arreIp()
-      {
+      function arreIp() {
          if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
          if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
          return $_SERVER['REMOTE_ADDR'];
@@ -123,8 +139,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
 
-      function generateRandomStr($length = 8)
-      {
+      function generateRandomStr($length = 8) {
          $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
          $charactersLength = strlen($characters);
          $randomString = '';
@@ -197,8 +212,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
       ];
    }
 
-   public function process_macro_click()
-   {
+   public function process_macro_click() {
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
