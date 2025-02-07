@@ -191,6 +191,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
          'Nombre y Apellido' => $order->get_formatted_billing_full_name(),
          'Telefono' => $order->get_billing_phone(),
          'CUIT-CUIL' => $order->get_meta('_billing_cuit_cuil'),
+         'URLBaseTienda' => home_url('/', 'https')
       ];
 
       $informacion_json = json_encode($alumno_info, JSON_UNESCAPED_UNICODE);
