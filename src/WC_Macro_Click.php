@@ -23,7 +23,8 @@ use PlusPagos\AESEncrypter;
  * @property form_fields $form_fields
  */
 
-class WC_Macro_Click extends WC_Payment_Gateway {
+class WC_Macro_Click extends WC_Payment_Gateway
+{
    public $id;
    public $icon;
    public $has_fields;
@@ -38,7 +39,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
    public $id_comercio;
    public $sucursal_comercio;
 
-   public function __construct() {
+   public function __construct()
+   {
       $this->id = 'macro_click';
       $this->icon = plugin_dir_url(__FILE__) . '../assets/logo.png';
       $this->has_fields = false;
@@ -72,7 +74,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       add_action('woocommerce_api_' . $this->id, array($this, 'process_macro_click'));
    }
 
-   public function init_form_fields() {
+   public function init_form_fields()
+   {
       $this->form_fields = array(
          'enabled' => array(
             'title'       => 'Activar/Desactivar',
@@ -117,7 +120,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       );
    }
 
-   public function process_payment($order_id) {
+   public function process_payment($order_id)
+   {
       global $woocommerce;
 
       $order = wc_get_order($order_id);
@@ -127,7 +131,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $aes = new AESEncrypter();
       $sha256 = new SHA256Encript();
 
-      function arreIp() {
+      function arreIp()
+      {
          if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
          if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
          return $_SERVER['REMOTE_ADDR'];
@@ -139,7 +144,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $comercio = $this->id_comercio;
       $sucursal_comercio = $aes->EncryptString($this->sucursal_comercio, $this->secret_key);
 
-      function generateRandomStr($length = 8) {
+      function generateRandomStr($length = 8)
+      {
          $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
          $charactersLength = strlen($characters);
          $randomString = '';
@@ -184,7 +190,7 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       $alumno_info = [
          'Nombre y Apellido' => $order->get_formatted_billing_full_name(),
          'Telefono' => $order->get_billing_phone(),
-         'DNI' => $order->get_meta('_billing_dni'),
+         'CUIT-CUIL' => $order->get_meta('_billing_cuit_cuil'),
       ];
 
       $informacion_json = json_encode($alumno_info, JSON_UNESCAPED_UNICODE);
@@ -212,7 +218,8 @@ class WC_Macro_Click extends WC_Payment_Gateway {
       ];
    }
 
-   public function process_macro_click() {
+   public function process_macro_click()
+   {
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
