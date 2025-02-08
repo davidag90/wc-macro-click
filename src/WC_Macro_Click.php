@@ -229,11 +229,11 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
          $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
-         print_r($order_id);
+         echo print_r($order_id, true);
 
          $order = wc_get_order($order_id);
 
-         print_r($order);
+         echo print_r($order, true);
 
          /* $status = $data['EstadoId'];
 
