@@ -230,17 +230,18 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
          $order = wc_get_order($order_id);
 
-         $order_check = 'No order';
+         // Capturar la salida de var_dump() en una variable
+         ob_start(); // Iniciar el búfer de salida
+         print_r($order);
+         $var_dump_output = ob_get_clean(); // Obtener la salida y limpiar el búfer
 
-         if ($order !== false) {
-            $order_check = 'Is order';
-         }
+         echo "El var_dump de la variable se ha guardado";
 
-         file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $order_id . PHP_EOL . $order_check, FILE_APPEND);
+         file_put_contents(__DIR__ . '/debug.txt', $var_dump_output . PHP_EOL, FILE_APPEND);
 
-         /* $status = $data['EstadoId'];
+         $status = $data['EstadoId'];
 
-         if ($status === '3') {
+         if ($status === '3' || $status === '2') {
             if ($order->meta_exists('macro_click_transac_id')) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             } else {
@@ -260,7 +261,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
             wc_add_notice('Procedimiento de pago cancelado. Por favor, intenta nuevamente con otro medio', 'notice');
-         } */
+         }
       }
    }
 }
