@@ -225,7 +225,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
          $writeData = serialize($data);
-         file_put_contents(__DIR__ . '/debug.log', PHP_EOL . $writeData . PHP_EOL, FILE_APPEND);
+         file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $writeData . PHP_EOL, FILE_APPEND);
 
          $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
