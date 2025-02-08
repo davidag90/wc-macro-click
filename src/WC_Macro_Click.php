@@ -227,7 +227,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
          $writeData = serialize($data);
          file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $writeData . PHP_EOL, FILE_APPEND);
 
-         $order_id = strstr($data['TransaccionComercioId'], '-', true);
+         /* $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
          $status = $data['EstadoId'];
          $order = wc_get_order(intval($order_id));
@@ -252,7 +252,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
             wc_add_notice('Procedimiento de pago cancelado. Por favor, intenta nuevamente con otro medio', 'notice');
-         }
+         } */
       }
    }
 }
