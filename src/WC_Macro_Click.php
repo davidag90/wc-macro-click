@@ -230,12 +230,10 @@ class WC_Macro_Click extends WC_Payment_Gateway
          $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
          $status = $data['EstadoId'];
-         $order = wc_get_order($order_id);
-
-         $transac_id_exists = $order->meta_exists('macro_click_transac_id');
+         $order = wc_get_order(intval($order_id));
 
          if ($status === '3') {
-            if ($transac_id_exists) {
+            if ($order->meta_exists('macro_click_transac_id')) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             } else {
                $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
@@ -246,7 +244,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
          }
 
          if ($status === '4' || $status === '7' || $status === '8' || $status === '11') {
-            if ($transac_id_exists) {
+            if ($order->meta_exists('macro_click_transac_id')) {
                $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
             } else {
                $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
