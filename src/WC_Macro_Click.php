@@ -227,10 +227,15 @@ class WC_Macro_Click extends WC_Payment_Gateway
          $writeData = serialize($data);
          file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $writeData . PHP_EOL, FILE_APPEND);
 
-         /* $order_id = strstr($data['TransaccionComercioId'], '-', true);
+         $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
-         $status = $data['EstadoId'];
-         $order = wc_get_order(intval($order_id));
+         print_r($order_id);
+
+         $order = wc_get_order($order_id);
+
+         print_r($order);
+
+         /* $status = $data['EstadoId'];
 
          if ($status === '3') {
             if ($order->meta_exists('macro_click_transac_id')) {
