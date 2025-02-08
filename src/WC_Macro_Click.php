@@ -224,16 +224,19 @@ class WC_Macro_Click extends WC_Payment_Gateway
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
-         $writeData = serialize($data);
-         file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $writeData . PHP_EOL, FILE_APPEND);
+         // $writeData = serialize($data);
 
          $order_id = strstr($data['TransaccionComercioId'], '-', true);
 
-         echo $order_id;
-
          $order = wc_get_order($order_id);
 
-         echo var_dump($order);
+         $order_check = 'No order';
+
+         if ($order !== false) {
+            $order_check = 'Is order';
+         }
+
+         file_put_contents(__DIR__ . '/debug.txt', PHP_EOL . $order_id . PHP_EOL . $order_check, FILE_APPEND);
 
          /* $status = $data['EstadoId'];
 
