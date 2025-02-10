@@ -188,6 +188,7 @@ class WC_Macro_Click extends WC_Payment_Gateway
       $productos_enc = urlencode(json_encode($productos));
 
       $alumno_info = [
+         'OrderIdWC' => strval($order->get_id()),
          'Nombre y Apellido' => $order->get_formatted_billing_full_name(),
          'Telefono' => $order->get_billing_phone(),
          'CUIT-CUIL' => $order->get_meta('_billing_cuit_cuil'),
@@ -224,11 +225,8 @@ class WC_Macro_Click extends WC_Payment_Gateway
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $jsonBody = file_get_contents('php://input');
          $data = json_decode($jsonBody, true);
-         // $writeData = serialize($data);
 
-         $order_id = strstr($data['TransaccionComercioId'], '-', true);
-
-         $order = wc_get_order($order_id);
+         $order = wc_get_order($data['orderIdWC']);
 
          // Capturar la salida de var_dump() en una variable
          ob_start(); // Iniciar el búfer de salida
@@ -239,13 +237,13 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
          file_put_contents(__DIR__ . '/debug.txt', $var_dump_output . PHP_EOL, FILE_APPEND);
 
-         $status = $data['EstadoId'];
+         $status = $data['orderStatus'];
 
          if ($status === '3' || $status === '2') {
             if ($order->meta_exists('macro_click_transac_id')) {
-               $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+               $order->update_meta_data('macro_click_transac_id', $data['orderIdMacro']);
             } else {
-               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+               $order->add_meta_data('macro_click_transac_id', $data['orderIdMacro']);
             }
 
             $order->payment_complete();
@@ -254,9 +252,9 @@ class WC_Macro_Click extends WC_Payment_Gateway
 
          if ($status === '4' || $status === '7' || $status === '8' || $status === '11') {
             if ($order->meta_exists('macro_click_transac_id')) {
-               $order->update_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+               $order->update_meta_data('macro_click_transac_id', $data['orderIdMacro']);
             } else {
-               $order->add_meta_data('macro_click_transac_id', $data['TransaccionPlataformaId']);
+               $order->add_meta_data('macro_click_transac_id', $data['orderIdMacro']);
             }
 
             $order->update_status('pending', 'Pedido en suspenso por pago fallido');
